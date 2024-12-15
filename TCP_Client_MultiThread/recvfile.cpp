@@ -32,11 +32,10 @@ void RecvFile::connectServer(QString ip, unsigned short port)
     // 连接服务器
     m_sslSocket->connectToHostEncrypted(ip, port);
     // 5 seconds are not enough.
-    if (m_sslSocket->waitForEncrypted(6000)) {
+    if (m_sslSocket->waitForEncrypted(10000)) {
         m_sslSocket->write("Authentication Suceeded");
     } else {
-        qDebug("Unable to connect to server");
-        return;
+        qDebug() << ("Unable to connect to server");
     }
 
     // // 检测是否和服务器是否连接成功了
@@ -60,11 +59,6 @@ void RecvFile::connectServer(QString ip, unsigned short port)
 
 void RecvFile::sendDataSlot(QString sData)
 {
-    // if (m_sslSocket == nullptr) {
-    //     qCritical() << "m_sslSocket is nullptr";
-    //     return;
-    // }
-
     sData = "Client Say: " + sData;
     // print data
     qDebug() << "client send data:" << sData;
@@ -75,9 +69,5 @@ void RecvFile::sendDataSlot(QString sData)
 
 void RecvFile::disconnectSlot()
 {
-    // if (m_sslSocket == nullptr) {
-    //     qCritical() << "m_sslSocket is nullptr";
-    //     return;
-    // }
     m_sslSocket->close();
 }

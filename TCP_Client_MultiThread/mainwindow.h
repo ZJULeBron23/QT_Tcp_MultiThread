@@ -24,6 +24,7 @@ private slots:
     void on_disconnect_clicked();
 
     void on_sendData_clicked();
+    void preTask();
 
 private:
     Ui::MainWindow *ui;
@@ -31,6 +32,6 @@ private:
 signals:
     void startConnect(QString ip, unsigned short port);
     void sendData(QString sData);
-    void discon();
+    void disconnect();
 };
 #endif // MAINWINDOW_H

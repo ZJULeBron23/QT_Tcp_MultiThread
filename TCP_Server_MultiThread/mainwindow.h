@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "tcpserver.h"
+#include <QTcpSocket>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,15 +22,15 @@ private slots:
     void on_startServer_clicked();
 
     void on_sendData_clicked();
+    void PreTask();
 
 signals:
     void start(QString msg);
     void init();
 
-    void socketPass(QTcpSocket *clientSocket);
+    void startListen(uint16_t port);
 
 private:
     Ui::MainWindow *ui;
-    TcpServer *m_Server;
 };
 #endif // MAINWINDOW_H
