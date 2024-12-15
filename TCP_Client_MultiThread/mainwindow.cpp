@@ -9,49 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("TCP - 客户端");
     qDebug() << "current main thread id:" << QThread::currentThread();
-
-    // object for communicate must be placed in sub thread
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-void MainWindow::on_connectServer_clicked()
-{
-    init();
-    QString ip = ui->ip->text();
-    unsigned short port = ui->port->text().toInt();
-
-    emit startConnect((ip), port);
-    ui->connectServer->setEnabled(false);
-    ui->disconnect->setEnabled(true);
-}
-
-void MainWindow::on_disconnect_clicked()
-{
-    emit disconnect();
-
-    ui->connectServer->setEnabled(true);
-    ui->disconnect->setEnabled(false);
-}
-
-void MainWindow::on_sendData_clicked()
-{
-    QString sendMsg = ui->sendArea->toPlainText();
-    emit sendData(sendMsg);
-}
-
-void MainWindow::init()
-{
     QThread *subThread = new QThread();
     RecvFile *worker = new RecvFile();
     worker->moveToThread(subThread);
 
     connect(this, &MainWindow::startConnect, worker, &RecvFile::connectServer);
     connect(this, &MainWindow::sendData, worker, &RecvFile::sendDataSlot);
-    connect(this, &MainWindow::disconnect, worker, &RecvFile::disconnectSlot);
+    connect(this, &MainWindow::discon, worker, &RecvFile::disconnectSlot);
     connect(worker, &RecvFile::connectOK, this,
             [=]() { ui->recvArea->append("恭喜, 连接服务器成功!!!"); });
     connect(worker, &RecvFile::msg, this,
@@ -69,4 +33,33 @@ void MainWindow::init()
     });
 
     subThread->start();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::on_connectServer_clicked()
+{
+    QString ip = ui->ip->text();
+    unsigned short port = ui->port->text().toInt();
+
+    emit startConnect(ip, port);
+    ui->connectServer->setEnabled(false);
+    ui->disconnect->setEnabled(true);
+}
+
+void MainWindow::on_disconnect_clicked()
+{
+    emit discon();
+
+    ui->connectServer->setEnabled(true);
+    ui->disconnect->setEnabled(false);
+}
+
+void MainWindow::on_sendData_clicked()
+{
+    QString sendMsg = ui->sendArea->toPlainText();
+    emit sendData(sendMsg);
 }

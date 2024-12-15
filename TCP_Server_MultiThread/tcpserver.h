@@ -1,6 +1,9 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
+
 #include <QTcpServer>
+#include <QSslKey>
+#include <QSslCertificate>
 
 class TcpServer : public QTcpServer
 {
@@ -8,12 +11,15 @@ class TcpServer : public QTcpServer
 public:
     explicit TcpServer(QObject *parent = nullptr);
 
-    // override incoming connection
 protected:
     void incomingConnection(qintptr socketDescriptor);
 
 signals:
-    void newClient(qintptr socketDescriptor);
+    void newClient();
+
+private:
+    QSslKey key;
+    QSslCertificate cert;
 };
 
 #endif // TCPSERVER_H

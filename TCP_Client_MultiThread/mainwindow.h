@@ -25,15 +25,12 @@ private slots:
 
     void on_sendData_clicked();
 
-    void init();
-
 private:
     Ui::MainWindow *ui;
-    QTcpSocket *m_tcpSocket;
 
 signals:
     void startConnect(QString ip, unsigned short port);
     void sendData(QString sData);
-    void disconnect();
+    void discon();
 };
 #endif // MAINWINDOW_H

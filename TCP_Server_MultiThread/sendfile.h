@@ -3,23 +3,27 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QSslKey>
+#include <QSslCertificate>
+#include <QSslSocket>
+#include <QTcpServer>
 
 class SendFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit SendFile(qintptr socket, QObject *parent = nullptr);
+    explicit SendFile(QObject *parent = nullptr);
 
-    void Working(QString msg);
-    void initSlot();
+    void link(QTcpSocket *clientSocket);
 
 signals:
     void done();
     void text(QByteArray msg);
+    void Working(QString msg);
 
 private:
-    qintptr m_socket;
-    QTcpSocket *m_TcpSocket;
+    QSslKey key;
+    QSslCertificate cert;
 };
 
 #endif // SENDFILE_H

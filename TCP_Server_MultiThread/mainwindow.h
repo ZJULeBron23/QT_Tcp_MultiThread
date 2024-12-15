@@ -27,6 +27,8 @@ signals:
     void start(QString msg);
     void init();
 
+    void socketPass(QTcpSocket *clientSocket);
+
 private:
     Ui::MainWindow *ui;
     TcpServer *m_Server;

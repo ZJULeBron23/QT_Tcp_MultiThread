@@ -17,16 +17,16 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        tcpserver.cpp
-        tcpserver.h
         sendfile.cpp
         sendfile.h
+        cert.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TCP_Server_Multi
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        tcpserver.h tcpserver.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET TCP_Server_Multi APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

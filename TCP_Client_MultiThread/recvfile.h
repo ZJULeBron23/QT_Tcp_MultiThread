@@ -1,13 +1,13 @@
 #ifndef RECVFILE_H
 #define RECVFILE_H
-#include <QTcpSocket>
+#include <QSslSocket>
 #include <QObject>
 
 class RecvFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit RecvFile(QObject *parent = nullptr);
+    explicit RecvFile();
 
     void connectServer(QString ip, unsigned short port);
     void sendDataSlot(QString sData);
@@ -19,7 +19,7 @@ signals:
     void gameOver();
 
 private:
-    QTcpSocket *m_tcpSocket = nullptr;
+    QSslSocket *m_sslSocket;
 };
 
 #endif // RECVFILE_H

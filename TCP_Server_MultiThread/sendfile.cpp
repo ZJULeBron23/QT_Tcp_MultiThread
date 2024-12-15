@@ -1,40 +1,32 @@
 #include "sendfile.h"
 #include <QThread>
 #include <QDebug>
-SendFile::SendFile(qintptr socket, QObject *parent) : QObject{ parent }
+#include <QSslConfiguration>
+
+SendFile::SendFile(QObject *parent) : QObject{ parent }
 {
-    m_socket = socket;
+    qDebug() << "constructor current  thread id:" << QThread::currentThreadId();
 }
 
-void SendFile::Working(QString msg)
+void SendFile::link(QTcpSocket *clientSocket)
 {
-    qDebug() << "Working current sub thread id :" << QThread::currentThread();
-    msg = "Server Say:" + msg;
-
-    m_TcpSocket->write(msg.toUtf8());
-    emit text(msg.toUtf8());
-}
-
-void SendFile::initSlot()
-{
-    // initialization shall not be placed in constructor
-    qDebug() << "initSlot current sub thread id:" << QThread::currentThread();
-    m_TcpSocket = new QTcpSocket;
-    m_TcpSocket->setSocketDescriptor(m_socket);
-
-    // 客户端断开了连接
-    connect(m_TcpSocket, &QTcpSocket::disconnected, this, [=]() {
-        m_TcpSocket->close();
-        m_TcpSocket->deleteLater();
+    connect(clientSocket, &QTcpSocket::readyRead, this, [=]() {
+        // 接收数据
+        QString recvMsg = clientSocket->readAll();
+        emit text(recvMsg.toUtf8());
+    });
+    connect(clientSocket, &QTcpSocket::disconnected, this, [=]() {
+        clientSocket->close();
+        clientSocket->deleteLater();
         emit done();
         qDebug() << ("客户端已经断开了连接...");
     });
+    connect(this, &SendFile::Working, clientSocket, [=](QString msg) {
+        clientSocket->write(msg.toUtf8());
+        qDebug() << "Working current sub thread id :"
+                 << QThread::currentThread();
+        msg = "Server Say:" + msg;
 
-    // inspect the data from client
-    connect(m_TcpSocket, &QTcpSocket::readyRead, this, [=]() {
-        // 接收数据
-        QString recvMsg = m_TcpSocket->readAll();
-        // recvMsg = "Recving client msg:" + recvMsg;
-        emit text(recvMsg.toUtf8());
+        emit text(msg.toUtf8());
     });
 }
